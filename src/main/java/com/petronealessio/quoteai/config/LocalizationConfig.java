@@ -23,7 +23,7 @@ public class LocalizationConfig {
     public LocaleResolver localeResolver() {
         AcceptHeaderLocaleResolver lr = new AcceptHeaderLocaleResolver();
         //Set default locale for this locale resolver to return in the case no Accept-Language is found
-        lr.setDefaultLocale(Locale.ITALIAN);
+        lr.setDefaultLocale(Locale.ENGLISH);
         return lr;
     }
 

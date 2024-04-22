@@ -1,6 +1,8 @@
 package com.petronealessio.quoteai.service;
 
-import ch.qos.logback.classic.Logger;
+import com.petronealessio.quoteai.model.Quote;
+import com.petronealessio.quoteai.model.QuoteTopic;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.ChatClient;
 import org.springframework.ai.chat.prompt.Prompt;
@@ -9,6 +11,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.util.Locale;
+
 /**
  * The QuoteGeneratorService class is responsible for generating quotes based on prompts using an AI model.
  * It utilizes a ChatClient to interact with the AI model and retrieve the generated quotes.
@@ -16,14 +22,8 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 public class QuoteGeneratorService {
 
-    /**
-     * The logger instance for logging messages.
-     */
-    private static final Logger logger = (Logger) LoggerFactory.getLogger(QuoteGeneratorService.class);
+    private static final Logger logger = LoggerFactory.getLogger(QuoteGeneratorService.class);
 
-    /**
-     * The ChatClient instance used to communicate with the AI model.
-     */
     @Autowired
     private final ChatClient chatClient;
 
@@ -37,18 +37,23 @@ public class QuoteGeneratorService {
     }
 
     /**
-     * Generates a quote based on the given prompt.
+     * Generates a quote based on the topic and locale.
      *
-     * @param prompt The prompt to generate the quote.
+     * @param topic The topic of the quote.
+     * @param locale The locale used for generating the quote.
      * @return The generated quote.
      * @throws ResponseStatusException If there is an error retrieving the response from the AI model.
      */
-    public String generate(final Prompt prompt){
+    public Quote generate(final QuoteTopic topic, final Locale locale){
 
-        String quote;
+        // Constructs the prompt based on the topic and locale
+        Prompt prompt = PromptBuilder.build(topic, locale);
+
+        String sentence;
         try {
-            // Call the AI model via ChatClient to retrieve the quote
-            quote = chatClient.call(prompt).getResult().getOutput().getContent();
+            // Call the AI model via ChatClient to generate the quote
+            sentence = chatClient.call(prompt).getResult().getOutput().getContent();
+            logger.info("AI model generated the quote successfully");
         } catch (Exception e) {
             // Log an error message if unable to retrieve response from AI model
             logger.error("Unable to retrieve response from AI model", e);
@@ -56,9 +61,17 @@ public class QuoteGeneratorService {
             throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR, "Unable to retrieve response from AI model", e);
         }
+        // Add quotation mark to the sentence
+        sentence = addQuotationMark(sentence);
 
-        // Add quotation mark and return
-        return addQuotationMark(quote);
+        // Construct quote
+        Quote quote = new Quote();
+        quote.setSentence(sentence);
+        quote.setTopic(topic);
+        quote.setLanguageIsoCode(locale.getISO3Language());
+        quote.setCreatedDate(Timestamp.from(Instant.now()));
+
+        return quote;
     }
 
     /**

@@ -2,7 +2,7 @@ package com.petronealessio.quoteai.controller;
 
 import com.petronealessio.quoteai.model.Quote;
 import com.petronealessio.quoteai.model.QuoteTopic;
-import com.petronealessio.quoteai.service.PromptBuilder;
+import com.petronealessio.quoteai.service.QuoteDatabaseManager;
 import com.petronealessio.quoteai.service.QuoteGeneratorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +25,9 @@ public class QuoteAiController {
     @Autowired
     private QuoteGeneratorService quoteGeneratorService;
 
+    @Autowired
+    private QuoteDatabaseManager quoteDatabaseManager;
+
     /**
      * Handles the GET request to generate a quote based on the specified topic.
      *
@@ -40,7 +43,20 @@ public class QuoteAiController {
         Quote quote = quoteGeneratorService.generate(topic,locale);
         logger.info("Quote generated successfully");
 
-        // Returns the generated quote as ResponseEntity
-        return ResponseEntity.ok(quote);
+        // Saves the quote on database
+        Quote savedQuote = quoteDatabaseManager.saveQuote(quote);
+
+        // Returns generated quote
+        if (savedQuote != null){
+            logger.info("Quote saved with id " + savedQuote.getId());
+
+            // Returns the saved quote as ResponseEntity
+            return ResponseEntity.ok(savedQuote);
+        } else {
+            logger.warn("The quote could not be saved. The generated quote is provided without an id");
+
+            // Returns the generated quote as ResponseEntity
+            return ResponseEntity.ok(quote);
+        }
     }
 }

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -72,6 +73,24 @@ public class QuoteDatabaseManager {
         } catch (Exception ex) {
             // If excess quotes are not deleted, it's not a problem
             logger.error("Unable to delete excess quotes from the database: ", ex);
+        }
+    }
+
+    /**
+     * Retrieves the last 10 generated quotes from the database.
+     *
+     * @return A list of the last 10 generated quotes, ordered by creation date in descending order.
+     * If an exception occurs during the retrieval process, an empty list is returned.
+     */
+    @Transactional
+    public List<Quote> last10GeneratedQuotes(){
+        try {
+            // Gets the last 10 quotes ordered by creation date in descending order
+            return quoteRepository.findTop10ByOrderByCreatedDateDesc();
+        } catch (Exception ex) {
+            logger.error("Unable to retrieve last 10 quotes from the database: ", ex);
+            // Returns an empty list in case of an exception
+            return new ArrayList<>();
         }
     }
 }

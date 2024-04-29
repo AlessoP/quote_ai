@@ -22,4 +22,10 @@ public interface QuoteRepository extends JpaRepository<Quote, Integer> {
      */
     List<Quote> findAllByLanguageIsoCodeOrderByCreatedDateDesc(String languageIsoCode);
 
+    /**
+     * Retrieves the top 10 quotes ordered by created date in descending order.
+     *
+     * @return A list of the top 10 quotes ordered by created date.
+     */
+    List<Quote> findTop10ByOrderByCreatedDateDesc();
 }

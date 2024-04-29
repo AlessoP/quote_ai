@@ -64,4 +64,17 @@ public class QuoteDatabaseManagerIntegrationTest {
                 .findAllByLanguageIsoCodeOrderByCreatedDateDesc(Locale.ITALIAN.getISO3Language());
         assertEquals(10, newAllSavedQuotes.size());
     }
+
+    @Test
+    void last10GeneratedQuotes_results() {
+        //Act
+        List<Quote> result = quoteDatabaseManager.last10GeneratedQuotes();
+
+        // Assert
+        System.out.println("Results {");
+        for (Quote quote : result) {
+            System.out.println(quote);
+        }
+        System.out.println("}");
+    }
 }

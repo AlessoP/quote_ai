@@ -33,7 +33,7 @@ public class PromptBuilder {
         //Determine the user message based on the specified topic
         Message userMessage = switch (topic) {
             case MOTIVATIONAL -> new UserMessage("Generate a motivational aphorism");
-            case HUMORISTIC -> new UserMessage("Generate a humoristic aphorism");
+            case HUMOROUS -> new UserMessage("Generate a humorous aphorism");
             case FRIENDSHIP -> new UserMessage("Generate an aphorism about friendship");
             case LOVE -> new UserMessage("Generate an aphorism about love");
             case EXISTENTIAL -> new UserMessage("Generate an existential aphorism");

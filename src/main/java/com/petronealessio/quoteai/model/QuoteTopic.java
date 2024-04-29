@@ -16,9 +16,9 @@ public enum QuoteTopic {
     MOTIVATIONAL,
 
     /**
-     * The humoristic topic for generating humorous quotes.
+     * The humorous topic for generating humorous quotes.
      */
-    HUMORISTIC,
+    HUMOROUS,
 
     /**
      * The love topic for generating quotes about love.

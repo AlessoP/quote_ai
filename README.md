@@ -16,6 +16,8 @@ QuoteAI has been developed using the Java programming language, with the support
 Spring Boot framework to ensure flexibility and maintainability in the application.
 Throughout the development process, IntelliJ IDEA was employed as the Integrated Development Environment (IDE).
 Additionally, Maven was used as a dependency management tool to simplify the build process and project management.
+
+### RESTful
 To handle requests, the project extensively utilizes the Representational State Transfer (REST) protocol,
 enabling efficient and scalable communication between client and server.
 
